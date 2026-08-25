@@ -1,36 +1,34 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# lucky kevwoda
 
-## Getting Started
+Personal journal of **Lucky Ajekevwoda**, published under the byline **lucky kevwoda**.
 
-First, run the development server:
+## Run locally
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Publish from the admin portal
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Open [http://localhost:3000/admin](http://localhost:3000/admin)
+2. Sign in with `ADMIN_PASSWORD` from `.env.local`
+3. Write a post into Growth Strategy, Fun, Blockchain, Stablecoins, Research, or Thoughts
+4. **Publish** puts it on the site. **Save draft** keeps it off the public pages
 
-## Learn More
+Set `ADMIN_PASSWORD` and `ADMIN_SECRET` in `.env.local` before going live.
 
-To learn more about Next.js, take a look at the following resources:
+The admin writes markdown files into `content/`. That works on your machine and on a VPS. It will not persist on a read-only host like Vercel.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+You can still drop a `.md` file into `content/` by hand if you prefer.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Identity
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| | |
+|---|---|
+| Full name | Lucky Ajekevwoda |
+| Byline | lucky kevwoda |
+| X | [@0xluckywiz](https://x.com/0xluckywiz) |
+| Building | [MoyoPay](https://moyopay.io) |

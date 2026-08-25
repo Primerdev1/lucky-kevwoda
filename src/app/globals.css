@@ -1,26 +1,228 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --paper: #f3ece0;
+  --paper-raised: #faf6ec;
+  --paper-sunken: #e7dece;
+  --ink: #1c1611;
+  --ink-muted: #5c5348;
+  --ink-faint: #8a7f70;
+  --rule: #d3c7b2;
+  --laterite: #c2471a;
+  --laterite-deep: #8d300f;
+  --moss: #243f34;
+  --moss-mid: #3a5a48;
+}
+
+html.night {
+  --paper: #14110e;
+  --paper-raised: #1d1814;
+  --paper-sunken: #0e0c0a;
+  --ink: #f0e6d6;
+  --ink-muted: #b7ab99;
+  --ink-faint: #8a7e6e;
+  --rule: #3a3228;
+  --laterite: #e06a36;
+  --laterite-deep: #c2471a;
+  --moss: #9ec9b0;
+  --moss-mid: #7eaa90;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-paper: var(--paper);
+  --color-paper-raised: var(--paper-raised);
+  --color-paper-sunken: var(--paper-sunken);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-faint: var(--ink-faint);
+  --color-rule: var(--rule);
+  --color-laterite: var(--laterite);
+  --color-laterite-deep: var(--laterite-deep);
+  --color-moss: var(--moss);
+  --color-moss-mid: var(--moss-mid);
+  --font-display: var(--font-fraunces);
+  --font-serif: var(--font-source-serif);
+  --font-sans: var(--font-ibm-plex);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  border-color: var(--rule);
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-ibm-plex), "Segoe UI", sans-serif;
+  min-height: 100vh;
+}
+
+body::before {
+  content: "";
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  opacity: 0.045;
+  background-image: radial-gradient(rgba(28, 22, 17, 0.55) 0.6px, transparent 0.6px);
+  background-size: 3px 3px;
+}
+
+html.night body::before {
+  opacity: 0.07;
+  background-image: radial-gradient(rgba(240, 230, 214, 0.35) 0.6px, transparent 0.6px);
+}
+
+::selection {
+  background: var(--laterite);
+  color: var(--paper-raised);
+}
+
+:focus-visible {
+  outline: 2px solid var(--laterite);
+  outline-offset: 3px;
+}
+
+.wordmark-lucky {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-style: italic;
+  font-weight: 500;
+}
+
+.wordmark-kevwoda {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-style: normal;
+  font-weight: 500;
+}
+
+.prose-journal {
+  font-family: var(--font-source-serif), Georgia, serif;
+  font-size: 1.175rem;
+  line-height: 1.78;
+  color: var(--ink);
+}
+
+.prose-journal > *:first-child {
+  margin-top: 0;
+}
+
+.prose-journal p {
+  margin: 0 0 1.35em;
+}
+
+.prose-journal h2 {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 1.7rem;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  margin: 2.1em 0 0.65em;
+}
+
+.prose-journal h3 {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin: 1.8em 0 0.5em;
+}
+
+.prose-journal a {
+  color: var(--laterite-deep);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.prose-journal a:hover {
+  color: var(--laterite);
+}
+
+.prose-journal strong {
+  font-weight: 600;
+}
+
+.prose-journal em {
+  font-style: italic;
+}
+
+.prose-journal blockquote {
+  border-left: 2px solid var(--laterite);
+  margin: 1.8em 0;
+  padding: 0.15em 0 0.15em 1.2em;
+  color: var(--ink-muted);
+  font-style: italic;
+}
+
+.prose-journal ul,
+.prose-journal ol {
+  margin: 0 0 1.35em;
+  padding-left: 1.3em;
+}
+
+.prose-journal li {
+  margin: 0.35em 0;
+}
+
+.prose-journal li::marker {
+  color: var(--laterite);
+}
+
+.prose-journal code {
+  font-size: 0.86em;
+  background: var(--paper-sunken);
+  padding: 0.12em 0.38em;
+  border-radius: 3px;
+}
+
+.prose-journal pre {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 1.15em 1.25em;
+  overflow-x: auto;
+  margin: 0 0 1.5em;
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+html.night .prose-journal pre {
+  background: #0a0908;
+  color: var(--paper);
+}
+
+.prose-journal pre code {
+  background: transparent;
+  padding: 0;
+  color: inherit;
+}
+
+.prose-journal hr {
+  border: 0;
+  border-top: 1px solid var(--rule);
+  margin: 2.4em 0;
+}
+
+.prose-journal.drop-cap > p:first-of-type::first-letter {
+  float: left;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 4.55rem;
+  line-height: 0.78;
+  padding: 0.1em 0.12em 0 0;
+  color: var(--laterite);
+  font-weight: 500;
+}
+
+.link-quiet {
+  text-decoration: none;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 0 1px;
+  transition: background-size 180ms ease;
+}
+
+.link-quiet:hover {
+  background-size: 100% 1px;
 }
