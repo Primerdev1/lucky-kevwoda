@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { adminCookie, passwordsMatch, signSession } from "@/lib/admin-auth";
 
+export const runtime = "nodejs";
+
 export async function POST(request: Request) {
   const body = (await request.json().catch(() => null)) as { password?: string } | null;
   if (!passwordsMatch(String(body?.password ?? ""))) {

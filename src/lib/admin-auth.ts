@@ -6,8 +6,15 @@ function secret() {
   return process.env.ADMIN_SECRET || process.env.ADMIN_PASSWORD || "dev-change-me";
 }
 
+function normalizeSecret(value: string) {
+  return value.replace(/^\uFEFF/, "").replace(/\r/g, "").trim();
+}
+
 export function adminPassword() {
-  return process.env.ADMIN_PASSWORD ?? "";
+  const fromEnv = normalizeSecret(process.env.ADMIN_PASSWORD ?? "");
+  if (fromEnv) return fromEnv;
+  if (process.env.NODE_ENV !== "production") return "kevwoda-publish";
+  return "";
 }
 
 async function hmacHex(value: string) {
@@ -46,8 +53,9 @@ export async function verifySession(token: string | undefined) {
 
 export function passwordsMatch(input: string) {
   const expected = adminPassword();
+  const got = normalizeSecret(input);
   if (!expected) return false;
-  return timingSafeEqual(input, expected);
+  return timingSafeEqual(got, expected);
 }
 
 export const adminCookie = {
