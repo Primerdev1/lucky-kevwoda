@@ -21,7 +21,7 @@ export function Wordmark({ href = "/", size = "md" }: WordmarkProps) {
   if (!href) return inner;
 
   return (
-    <Link href={href} className="inline-flex items-baseline gap-2 text-ink">
+    <Link href={href} className="inline-flex min-w-0 items-baseline gap-2 whitespace-nowrap text-ink">
       <span
         aria-hidden
         className="mt-[0.15em] inline-block h-[0.55em] w-[0.55em] rounded-[1px] bg-laterite"

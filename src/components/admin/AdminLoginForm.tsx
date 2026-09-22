@@ -13,25 +13,37 @@ export function AdminLoginForm({ nextPath }: { nextPath: string }) {
     event.preventDefault();
     setPending(true);
     setError("");
-    const response = await fetch("/api/admin/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password }),
-    });
-    setPending(false);
-    if (!response.ok) {
-      setError("That password did not match.");
-      return;
+    try {
+      const response = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: password.trim() }),
+      });
+      if (!response.ok) {
+        setError("That password did not match.");
+        return;
+      }
+      const dest = nextPath.startsWith("/admin") ? nextPath : "/admin";
+      window.location.assign(dest);
+    } catch {
+      setError("Could not reach the server. Try again.");
+    } finally {
+      setPending(false);
+      router.refresh();
     }
-    router.push(nextPath.startsWith("/admin") ? nextPath : "/admin");
-    router.refresh();
   }
 
   return (
     <form onSubmit={onSubmit} className="mt-10 flex flex-col gap-4">
-      <label className="flex flex-col gap-2 font-sans text-[0.68rem] uppercase tracking-[0.18em] text-[#8a7e6e]">
-        Password
+      <div className="flex flex-col gap-2">
+        <label
+          htmlFor="admin-password"
+          className="font-sans text-[0.68rem] uppercase tracking-[0.18em] text-[#8a7e6e]"
+        >
+          Password
+        </label>
         <input
+          id="admin-password"
           type="password"
           name="password"
           autoComplete="current-password"
@@ -43,7 +55,7 @@ export function AdminLoginForm({ nextPath }: { nextPath: string }) {
           className="block w-full border border-[#3a3228] bg-[#1d1814] px-4 py-3 font-sans text-base font-normal normal-case tracking-normal text-[#f0e6d6] outline-none focus:border-[#e06a36]"
           required
         />
-      </label>
+      </div>
       {error ? <p className="font-serif text-[#e06a36]">{error}</p> : null}
       <button
         type="submit"

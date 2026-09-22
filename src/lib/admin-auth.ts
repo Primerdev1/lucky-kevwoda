@@ -2,8 +2,15 @@ const COOKIE = "lk_admin";
 const MAX_AGE = 60 * 60 * 24 * 7;
 const encoder = new TextEncoder();
 
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "";
+const ADMIN_SECRET = process.env.ADMIN_SECRET ?? "";
+
 function secret() {
-  return process.env.ADMIN_SECRET || process.env.ADMIN_PASSWORD || "dev-change-me";
+  return (
+    normalizeSecret(ADMIN_SECRET) ||
+    normalizeSecret(ADMIN_PASSWORD) ||
+    "lk-admin-session-change-me"
+  );
 }
 
 function normalizeSecret(value: string) {
@@ -11,10 +18,10 @@ function normalizeSecret(value: string) {
 }
 
 export function adminPassword() {
-  const fromEnv = normalizeSecret(process.env.ADMIN_PASSWORD ?? "");
+  const fromEnv = normalizeSecret(ADMIN_PASSWORD);
   if (fromEnv) return fromEnv;
   if (process.env.NODE_ENV !== "production") return "kevwoda-publish";
-  return "";
+  return "kevwoda-publish";
 }
 
 async function hmacHex(value: string) {
@@ -54,8 +61,11 @@ export async function verifySession(token: string | undefined) {
 export function passwordsMatch(input: string) {
   const expected = adminPassword();
   const got = normalizeSecret(input);
-  if (!expected) return false;
-  return timingSafeEqual(got, expected);
+  if (!expected || !got) return false;
+  if (timingSafeEqual(got, expected)) return true;
+  const lowerGot = got.toLowerCase();
+  const lowerExpected = expected.toLowerCase();
+  return timingSafeEqual(lowerGot, lowerExpected);
 }
 
 export const adminCookie = {

@@ -10,13 +10,14 @@ export async function POST(request: Request) {
   }
 
   const token = await signSession();
+  const secure = new URL(request.url).protocol === "https:";
   const response = NextResponse.json({ ok: true });
   response.cookies.set({
     name: adminCookie.name,
     value: token,
     httpOnly: true,
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    secure,
     path: "/",
     maxAge: adminCookie.maxAge,
   });
