@@ -4,8 +4,8 @@ import { collectionLabel, collectionPath, formatDate, getAdminPosts } from "@/li
 
 export const dynamic = "force-dynamic";
 
-export default function AdminHomePage() {
-  const posts = getAdminPosts();
+export default async function AdminHomePage() {
+  const posts = await getAdminPosts();
 
   return (
     <>

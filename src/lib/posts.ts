@@ -6,6 +6,12 @@ import { remark } from "remark";
 import gfm from "remark-gfm";
 import html from "remark-html";
 import { collections, type Collection } from "@/lib/collections";
+import {
+  loadOverlay,
+  postKey,
+  saveOverlay,
+  type OverlayPost,
+} from "@/lib/cms-overlay";
 
 export {
   collectionCopy,
@@ -92,19 +98,48 @@ function parseFile(
   };
 }
 
-function listParsed(includeDrafts: boolean, collection?: Collection) {
+function overlayToParsed(item: OverlayPost): ParsedFile {
+  return {
+    meta: {
+      slug: item.slug,
+      collection: item.collection,
+      title: item.title,
+      date: toIsoDate(item.date),
+      excerpt: item.excerpt,
+      tags: item.tags,
+      featured: item.featured,
+      cover: item.cover,
+      draft: item.draft,
+      readingMinutes: readingMinutes(item.markdown),
+    },
+    content: item.markdown,
+  };
+}
+
+async function listParsed(includeDrafts: boolean, collection?: Collection) {
   const buckets = collection ? [collection] : [...collections];
-  const parsed: ParsedFile[] = [];
+  const byKey = new Map<string, ParsedFile>();
 
   for (const bucket of buckets) {
     const dir = path.join(contentDir, bucket);
     if (!fs.existsSync(dir)) continue;
     for (const filename of fs.readdirSync(dir)) {
-      const post = parseFile(bucket, filename, includeDrafts);
-      if (post) parsed.push(post);
+      const post = parseFile(bucket, filename, true);
+      if (post) byKey.set(postKey(post.meta.collection, post.meta.slug), post);
     }
   }
 
+  const overlay = await loadOverlay();
+  for (const [key, item] of Object.entries(overlay.posts)) {
+    if (collection && item.collection !== collection) continue;
+    if (item.deleted) {
+      byKey.delete(key);
+      continue;
+    }
+    byKey.set(key, overlayToParsed(item));
+  }
+
+  const parsed = [...byKey.values()].filter((item) => includeDrafts || !item.meta.draft);
   parsed.sort((a, b) => (a.meta.date < b.meta.date ? 1 : a.meta.date > b.meta.date ? -1 : 0));
   return parsed;
 }
@@ -115,7 +150,7 @@ async function renderMarkdown(source: string) {
 }
 
 export const getPosts = cache(async (collection?: Collection): Promise<Post[]> => {
-  const parsed = listParsed(false, collection);
+  const parsed = await listParsed(false, collection);
   return Promise.all(
     parsed.map(async (item) => ({
       ...item.meta,
@@ -129,15 +164,17 @@ export const getPost = cache(async (collection: Collection, slug: string) => {
   return posts.find((post) => post.slug === slug) ?? null;
 });
 
-export function getAdminPosts(collection?: Collection): AdminPost[] {
-  return listParsed(true, collection).map((item) => ({
+export async function getAdminPosts(collection?: Collection): Promise<AdminPost[]> {
+  const parsed = await listParsed(true, collection);
+  return parsed.map((item) => ({
     ...item.meta,
     markdown: item.content,
   }));
 }
 
-export function getAdminPost(collection: Collection, slug: string) {
-  return getAdminPosts(collection).find((post) => post.slug === slug) ?? null;
+export async function getAdminPost(collection: Collection, slug: string) {
+  const posts = await getAdminPosts(collection);
+  return posts.find((post) => post.slug === slug) ?? null;
 }
 
 export async function getFeaturedPost() {
@@ -182,17 +219,20 @@ export type PostInput = {
   markdown: string;
 };
 
-function uniqueSlug(collection: Collection, desired: string, current?: string) {
+async function uniqueSlug(collection: Collection, desired: string, current?: string) {
   let slug = slugify(desired);
   if (slug === current) return slug;
-  const dir = path.join(contentDir, collection);
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  const existing = new Set(
+    (await getAdminPosts(collection)).map((post) => post.slug),
+  );
+  if (current) existing.delete(current);
   let n = 2;
-  while (fs.existsSync(path.join(dir, `${slug}.md`))) {
-    slug = `${slugify(desired)}-${n}`;
+  let candidate = slug;
+  while (existing.has(candidate)) {
+    candidate = `${slug}-${n}`;
     n += 1;
   }
-  return slug;
+  return candidate;
 }
 
 function serializePost(input: PostInput) {
@@ -208,28 +248,82 @@ function serializePost(input: PostInput) {
   return matter.stringify(input.markdown.replace(/^\uFEFF/, "").trimStart(), data);
 }
 
-export function savePost(input: PostInput, previous?: { collection: Collection; slug: string }) {
+export async function savePost(
+  input: PostInput,
+  previous?: { collection: Collection; slug: string },
+) {
   if (!input.title.trim()) throw new Error("Title is required.");
-  const dir = path.join(contentDir, input.collection);
-  fs.mkdirSync(dir, { recursive: true });
-  const slug = uniqueSlug(
+  const slug = await uniqueSlug(
     input.collection,
     input.slug?.trim() || input.title,
     previous && previous.collection === input.collection ? previous.slug : undefined,
   );
-  const filePath = path.join(dir, `${slug}.md`);
-  fs.writeFileSync(filePath, serializePost(input), "utf8");
 
-  if (previous && (previous.collection !== input.collection || previous.slug !== slug)) {
-    const oldPath = path.join(contentDir, previous.collection, `${previous.slug}.md`);
-    if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+  const record: OverlayPost = {
+    collection: input.collection,
+    slug,
+    title: input.title.trim(),
+    date: toIsoDate(input.date),
+    excerpt: input.excerpt.trim(),
+    tags: input.tags.map((tag) => tag.trim()).filter(Boolean),
+    featured: input.featured,
+    draft: input.draft,
+    cover: input.cover?.trim() || undefined,
+    markdown: input.markdown.replace(/^\uFEFF/, "").trimStart(),
+  };
+
+  await saveOverlay((current) => {
+    const posts = { ...current.posts };
+    if (previous) delete posts[postKey(previous.collection, previous.slug)];
+    posts[postKey(input.collection, slug)] = record;
+    return { posts };
+  });
+
+  if (!process.env.VERCEL) {
+    try {
+      const dir = path.join(contentDir, input.collection);
+      fs.mkdirSync(dir, { recursive: true });
+      fs.writeFileSync(path.join(dir, `${slug}.md`), serializePost(input), "utf8");
+      if (previous && (previous.collection !== input.collection || previous.slug !== slug)) {
+        const oldPath = path.join(contentDir, previous.collection, `${previous.slug}.md`);
+        if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+      }
+    } catch {
+      // Overlay is the source of truth on hosts that cannot write markdown files.
+    }
   }
 
   return { collection: input.collection, slug };
 }
 
-export function deletePost(collection: Collection, slug: string) {
-  const filePath = path.join(contentDir, collection, `${slug}.md`);
-  if (!fs.existsSync(filePath)) throw new Error("Post not found.");
-  fs.unlinkSync(filePath);
+export async function deletePost(collection: Collection, slug: string) {
+  const existing = await getAdminPost(collection, slug);
+  if (!existing) throw new Error("Post not found.");
+
+  await saveOverlay((current) => {
+    const posts = { ...current.posts };
+    posts[postKey(collection, slug)] = {
+      collection,
+      slug,
+      title: existing.title,
+      date: existing.date,
+      excerpt: existing.excerpt,
+      tags: existing.tags,
+      featured: existing.featured,
+      draft: true,
+      cover: existing.cover,
+      markdown: existing.markdown,
+      deleted: true,
+    };
+    return { posts };
+  });
+
+  if (!process.env.VERCEL) {
+    try {
+      const filePath = path.join(contentDir, collection, `${slug}.md`);
+      if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+    } catch {
+      // Overlay hides the post even if the seed file cannot be removed.
+    }
+  }
 }

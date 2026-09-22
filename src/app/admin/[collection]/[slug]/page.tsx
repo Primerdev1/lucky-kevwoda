@@ -12,7 +12,7 @@ export default async function AdminEditPostPage({
 }) {
   const { collection, slug } = await params;
   if (!isCollection(collection)) notFound();
-  const post = getAdminPost(collection, slug);
+  const post = await getAdminPost(collection, slug);
   if (!post) notFound();
 
   return (

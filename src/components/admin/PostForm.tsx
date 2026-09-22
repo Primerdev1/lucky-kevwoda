@@ -93,14 +93,18 @@ export function PostForm({
     if (!initial?.collection || !initial.slug) return;
     if (!window.confirm("Delete this post? This cannot be undone.")) return;
     setPending(true);
-    const response = await fetch("/api/admin/posts", {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ collection: initial.collection, slug: initial.slug }),
+    setError("");
+    const params = new URLSearchParams({
+      collection: initial.collection,
+      slug: initial.slug,
     });
+    const response = await fetch(`/api/admin/posts?${params.toString()}`, {
+      method: "DELETE",
+    });
+    const data = (await response.json().catch(() => ({}))) as { error?: string };
     setPending(false);
     if (!response.ok) {
-      setError("Could not delete.");
+      setError(data.error || "Could not delete.");
       return;
     }
     router.push("/admin");
@@ -237,6 +241,16 @@ export function PostForm({
         >
           Save draft
         </button>
+        {mode === "edit" && !values.draft ? (
+          <button
+            type="button"
+            disabled={pending}
+            onClick={(event) => onSubmit(event, true)}
+            className="border border-[#3a3228] px-5 py-3 font-sans text-[0.72rem] uppercase tracking-[0.16em] disabled:opacity-60"
+          >
+            Unpublish
+          </button>
+        ) : null}
         {mode === "edit" ? (
           <button
             type="button"

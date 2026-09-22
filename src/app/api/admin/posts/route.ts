@@ -48,7 +48,7 @@ function previousFrom(body: Record<string, unknown>) {
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as Record<string, unknown>;
-    const saved = savePost(readInput(body));
+    const saved = await savePost(readInput(body));
     revalidate(saved.collection, saved.slug);
     return NextResponse.json(saved);
   } catch (error) {
@@ -63,7 +63,7 @@ export async function PUT(request: Request) {
   try {
     const body = (await request.json()) as Record<string, unknown>;
     const previous = previousFrom(body);
-    const saved = savePost(readInput(body), previous);
+    const saved = await savePost(readInput(body), previous);
     if (previous) revalidate(previous.collection, previous.slug);
     revalidate(saved.collection, saved.slug);
     return NextResponse.json(saved);
@@ -77,12 +77,21 @@ export async function PUT(request: Request) {
 
 export async function DELETE(request: Request) {
   try {
-    const body = (await request.json()) as { collection?: string; slug?: string };
-    if (!body.collection || !body.slug || !isCollection(body.collection)) {
+    const url = new URL(request.url);
+    let collection = url.searchParams.get("collection");
+    let slug = url.searchParams.get("slug");
+    if (!collection || !slug) {
+      const body = (await request.json().catch(() => null)) as
+        | { collection?: string; slug?: string }
+        | null;
+      collection = body?.collection ?? collection;
+      slug = body?.slug ?? slug;
+    }
+    if (!collection || !slug || !isCollection(collection)) {
       throw new Error("Post not found.");
     }
-    deletePost(body.collection, body.slug);
-    revalidate(body.collection, body.slug);
+    await deletePost(collection, slug);
+    revalidate(collection, slug);
     return NextResponse.json({ ok: true });
   } catch (error) {
     return NextResponse.json(
