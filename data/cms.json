@@ -1,3 +1,17 @@
 {
-  "posts": {}
+  "posts": {
+    "fun/delete-me-test": {
+      "collection": "fun",
+      "slug": "delete-me-test",
+      "title": "Delete-me test",
+      "date": "2026-09-22",
+      "excerpt": "Temporary post to verify delete.",
+      "tags": [
+        "test"
+      ],
+      "featured": false,
+      "draft": true,
+      "markdown": "Temporary draft for delete test."
+    }
+  }
 }
