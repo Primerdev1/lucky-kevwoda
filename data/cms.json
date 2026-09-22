@@ -59,6 +59,21 @@
       "featured": false,
       "draft": true,
       "markdown": "Ecosystem work is easy to fake for a weekend. Book a room, print a banner, post the recap. On Monday the city is the same.\n\nA Circle is a different object. It has a next date before the last one ends. It onboards people into something they can return to. It names the blockers in the room — education gaps, missing skills, the jump from a timeline to a livelihood — and then it tries to do something about them before the next gathering.\n\n## What we are actually building\n\nLogos Circle is a node that did not exist, and now it does. The work is to keep it from becoming a costume.\n\nThe pattern I trust so far:\n\n- **Repetition over reach.** Thirteen people who come back beat a hundred who came once.\n- **Onboarding as hospitality.** Nobody should leave the room still outside the network.\n- **Curriculum, not vibes.** Meetup 3.0 had to become a training series because conversation had already done what conversation can do.\n- **Local ownership.** If it only runs when I am in town, it is not an institution. It is a tour.\n\n## Community engineering is ops\n\nI used to describe my work as growth. That is still true, and it is also too flattering. The load-bearing skill is operations: the calendar, the follow-up, the person who answers, the list that is treated as people.\n\nImported playbooks skip this because they assume Discord density and a labour market that already knows what a protocol engineer is. The ground here does not assume that. So the Circle has to be a school, a hiring hallway, and a civic room at once.\n\nThat is research I can only do in public, by running the thing. These notes are the lab book.\n"
+    },
+    "thoughts/the-scene-is-not-an-institution": {
+      "collection": "thoughts",
+      "slug": "the-scene-is-not-an-institution",
+      "title": "The scene is not an institution",
+      "date": "2026-06-15",
+      "excerpt": "A growing tech and crypto scene is not the same as a path. The question is whether the people building will offer direction, or only a stage.",
+      "tags": [
+        "logos",
+        "community"
+      ],
+      "featured": false,
+      "draft": true,
+      "cover": "/images/night-desk.jpg",
+      "markdown": "A scene can look busy and still leave people standing outside it.\n\nThere is talent. There are rooms filling up. There are people holding bags they cannot spend, and people who want a job in the thing everyone is posting about. That is not the same as an institution.\n\nWhen we host Logos Circle, I can feel the temperature change between meetings. The first spark is easy. The second room is more focused — new faces, everyone leaving onboarded, people willing to name the actual blockers: gaps in the education pipeline, a shortage of skilled hands, the distance between a thread and a livelihood.\n\n## Beyond the conversation\n\nMeetup 3.0 had to go past conversation. People do not need another keynote about potential. They need direction, a skill they can practice, and a path that could become a first job in tech or Web3.\n\nThat is slower work than a hype cycle. It is also the only work that compounds.\n\n## Build where the growth is coming from\n\nA sentence I keep giving other founders: impact your community first, and build where the growth is already trying to happen. Do not parachute a template onto a city and call it ecosystem development.\n\nThe Circle is a small proof. The question for this journal is how to keep that proof honest as it gets bigger.\n"
     }
   }
 }
