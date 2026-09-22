@@ -5,13 +5,13 @@
       "slug": "delete-me-test",
       "title": "Delete-me test",
       "date": "2026-09-22",
-      "excerpt": "Temporary post to verify delete.",
+      "excerpt": "Temporary post to verify unpublish.",
       "tags": [
         "test"
       ],
       "featured": false,
       "draft": true,
-      "markdown": "Temporary draft for delete test."
+      "markdown": "Now unpublished/draft."
     }
   }
 }
