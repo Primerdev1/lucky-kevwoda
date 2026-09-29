@@ -60,7 +60,7 @@ const jsonLd = {
   name: site.legalName,
   alternateName: site.name,
   url: site.url,
-  sameAs: [site.twitter, site.moyoPay],
+  sameAs: [site.twitter, site.linkedin],
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

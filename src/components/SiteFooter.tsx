@@ -42,8 +42,8 @@ export function SiteFooter() {
               </a>
             </li>
             <li>
-              <a href={site.moyoPay} className="link-quiet">
-                MoyoPay
+              <a href={site.linkedin} className="link-quiet" rel="me">
+                LinkedIn
               </a>
             </li>
           </ul>

@@ -31,4 +31,4 @@ You can still drop a `.md` file into `content/` by hand if you prefer.
 | Full name | Lucky Ajekevwoda |
 | Byline | lucky kevwoda |
 | X | [@0xluckywiz](https://x.com/0xluckywiz) |
-| Building | [MoyoPay](https://moyopay.io) |
+| LinkedIn | [lucky-kevwoda](https://www.linkedin.com/in/lucky-kevwoda) |

@@ -7,7 +7,7 @@ export const site = {
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   twitter: "https://x.com/0xluckywiz",
   twitterHandle: "@0xluckywiz",
-  moyoPay: "https://moyopay.io",
+  linkedin: "https://www.linkedin.com/in/lucky-kevwoda",
   language: "en",
 } as const;
 
