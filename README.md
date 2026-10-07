@@ -15,7 +15,7 @@ Open [http://localhost:3000](http://localhost:3000).
 
 1. Open [http://localhost:3000/admin](http://localhost:3000/admin)
 2. Sign in with `ADMIN_PASSWORD` from `.env.local`
-3. Write a post into Growth Strategy, Fun, Blockchain, Stablecoins, Research, or Thoughts
+3. Write a post into GTM Strategy, Fun, Stablecoins, or Thoughts
 4. **Publish** puts it on the site. **Save draft** keeps it off the public pages
 
 Set `ADMIN_PASSWORD` and `ADMIN_SECRET` in `.env.local` before going live.

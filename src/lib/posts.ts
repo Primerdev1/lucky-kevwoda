@@ -5,7 +5,7 @@ import matter from "gray-matter";
 import { remark } from "remark";
 import gfm from "remark-gfm";
 import html from "remark-html";
-import { collections, type Collection } from "@/lib/collections";
+import { collections, isCollection, type Collection } from "@/lib/collections";
 import {
   loadOverlay,
   postKey,
@@ -131,6 +131,7 @@ async function listParsed(includeDrafts: boolean, collection?: Collection) {
 
   const overlay = await loadOverlay();
   for (const [key, item] of Object.entries(overlay.posts)) {
+    if (!isCollection(item.collection)) continue;
     if (collection && item.collection !== collection) continue;
     if (item.deleted) {
       byKey.delete(key);

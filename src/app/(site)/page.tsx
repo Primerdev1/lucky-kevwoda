@@ -5,16 +5,14 @@ import { PostCard } from "@/components/PostCard";
 import { collectionCopy, collections, getFeaturedPost, getPosts } from "@/lib/posts";
 import { site } from "@/lib/site";
 
-const topics = collections.filter(
-  (collection) => collection !== "research" && collection !== "thoughts",
-);
+const topics = collections.filter((collection) => collection !== "thoughts");
 
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const [all, featured] = await Promise.all([getPosts(), getFeaturedPost()]);
   const rest = all.filter((post) => post.slug !== featured?.slug);
-  const research = rest.filter((post) => post.collection === "research").slice(0, 3);
+  const gtm = rest.filter((post) => post.collection === "gtm-strategy").slice(0, 3);
   const thoughts = rest.filter((post) => post.collection === "thoughts").slice(0, 4);
 
   return (
@@ -29,7 +27,7 @@ export default async function Home() {
           <span className="wordmark-kevwoda">kevwoda</span>
         </h1>
         <p className="mt-8 max-w-2xl font-serif text-xl leading-relaxed text-ink-muted sm:text-2xl">
-          Research and thoughts on growth, money, and the institutions still being built.
+          Notes and thoughts on growth, money, and the institutions still being built.
         </p>
         <p className="mt-5 font-sans text-[0.72rem] uppercase tracking-[0.16em] text-ink-faint">
           {site.legalName}
@@ -38,7 +36,7 @@ export default async function Home() {
         </p>
       </section>
 
-      <section className="mx-auto grid max-w-6xl gap-px border-y border-rule bg-rule sm:grid-cols-2 lg:grid-cols-4">
+      <section className="mx-auto grid max-w-6xl gap-px border-y border-rule bg-rule sm:grid-cols-3">
         {topics.map((collection) => (
           <Link
             key={collection}
@@ -62,19 +60,19 @@ export default async function Home() {
       <section className="mx-auto grid max-w-6xl gap-16 px-5 py-16 sm:px-8 lg:grid-cols-12 lg:gap-12">
         <div className="lg:col-span-7">
           <div className="mb-6 flex items-baseline justify-between">
-            <h2 className="font-display text-3xl tracking-[-0.03em]">Research</h2>
+            <h2 className="font-display text-3xl tracking-[-0.03em]">GTM Strategy</h2>
             <Link
-              href="/research"
+              href="/gtm-strategy"
               className="font-sans text-[0.72rem] uppercase tracking-[0.16em] text-laterite hover:text-laterite-deep"
             >
-              All research
+              All GTM
             </Link>
           </div>
           <div className="border-t border-rule">
-            {research.length === 0 ? (
+            {gtm.length === 0 ? (
               <p className="py-8 font-serif text-ink-muted">Nothing filed yet.</p>
             ) : (
-              research.map((post) => <PostCard key={post.slug} post={post} emphasize />)
+              gtm.map((post) => <PostCard key={post.slug} post={post} emphasize />)
             )}
           </div>
         </div>

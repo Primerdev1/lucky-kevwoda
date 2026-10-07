@@ -9,7 +9,7 @@ export function SiteFooter() {
         <div>
           <Wordmark />
           <p className="mt-4 max-w-sm font-serif text-[1.05rem] leading-relaxed text-ink-muted">
-            Research and thoughts by {site.legalName}.
+            Notes and thoughts by {site.legalName}.
           </p>
         </div>
         <div>

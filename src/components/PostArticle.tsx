@@ -40,7 +40,7 @@ export function PostArticle({
           ) : null}
         </div>
         <div
-          className={`prose-journal mt-12 ${post.collection === "research" ? "drop-cap" : ""}`}
+          className={`prose-journal mt-12 ${post.collection === "thoughts" ? "drop-cap" : ""}`}
           dangerouslySetInnerHTML={{ __html: post.html }}
         />
         <p className="mt-16 font-display text-3xl text-laterite" aria-hidden>
